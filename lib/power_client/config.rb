@@ -35,7 +35,7 @@ module PowerClient
     module Cache
       class << self
         def cache
-          @cache ||= Config.new(YAML.load(File.read path, symbolize_names: true))
+          @cache ||= Config.new(YAML.load(File.read(path), symbolize_names: true))
         end
 
         def path
