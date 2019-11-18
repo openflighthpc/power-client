@@ -27,19 +27,25 @@
 # https://github.com/openflighthpc/power-client
 #===============================================================================
 
-task :setup do
-  $: << File.expand_path('lib', __dir__)
-  ENV['BUNDLE_GEMFILE'] ||= File.join(__dir__, 'Gemfile')
+module PowerClient
+  Commands = Struct.new(:raw_nodes) do
+    def status
+    end
 
-  require 'rubygems'
-  require 'bundler/setup'
+    def on
+    end
 
-  require 'pry'
-  require 'pry-byebug'
+    def off
+    end
+
+    private
+
+    def nodes
+      if raw_nodes
+        raw_nodes
+      else
+        raise "the '--nodes NODES' flag is required"
+      end
+    end
+  end
 end
-
-task console: :setup do
-  require 'power_client/cli'
-  binding.pry
-end
-
