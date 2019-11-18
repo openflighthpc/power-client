@@ -28,6 +28,7 @@
 #===============================================================================
 
 require 'commander'
+require 'power_client/config'
 require 'power_client/commands'
 
 module PowerClient

@@ -27,7 +27,19 @@
 # https://github.com/openflighthpc/power-client
 #===============================================================================
 
+require 'faraday'
+
 module PowerClient
+  Response = Struct.new(:_) do
+    def self.status
+    end
+
+    def self.connection
+      @connection ||= Faraday.new(url: Config::Cache.base_url) do
+      end
+    end
+  end
+
   Commands = Struct.new(:raw_nodes) do
     def status
     end

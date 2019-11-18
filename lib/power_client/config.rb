@@ -27,19 +27,28 @@
 # https://github.com/openflighthpc/power-client
 #===============================================================================
 
-source "https://rubygems.org"
+require 'active_support/core_ext/module/delegation'
+require 'hashie'
 
-git_source(:github) {|repo_name| "https://github.com/#{repo_name}" }
+module PowerClient
+  class Config < Hashie::Dash
+    module Cache
+      class << self
+        def cache
+          @cache ||= Config.new(YAML.load(File.read path, symbolize_names: true))
+        end
 
-gem 'activesupport'
-gem 'commander-openflighthpc'
-gem 'faraday'
-gem 'hashie'
-gem 'tty-editor'
-gem 'tty-table'
+        def path
+          File.expand_path('../../etc/config.yaml', __dir__)
+        end
 
-group :development do
-  gem 'pry'
-  gem 'pry-byebug'
+        delegate_missing_to :cache
+      end
+    end
+
+    include Hashie::Extensions::IgnoreUndeclared
+
+    property :base_url
+    property :jwt_token
+  end
 end
-
