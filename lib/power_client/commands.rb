@@ -31,6 +31,7 @@ require 'faraday'
 require 'faraday_middleware'
 require 'hashie'
 require 'tty-table'
+require 'uri'
 
 module PowerClient
   Request = Struct.new(:nodes) do
@@ -58,7 +59,7 @@ module PowerClient
     private
 
     def path
-      "/nodes/#{nodes}"
+      "/nodes/#{URI.escape(nodes, '[]')}"
     end
   end
 
