@@ -28,6 +28,8 @@
 #===============================================================================
 
 require 'faraday'
+require 'faraday_middleware'
+require 'hashie'
 
 module PowerClient
   Request = Struct.new(:nodes) do
@@ -44,6 +46,8 @@ module PowerClient
     def self.connection
       @connection ||= Faraday.new(url: Config::Cache.base_url) do |conn|
         conn.authorization :Bearer, Config::Cache.jwt_token
+        conn.use FaradayMiddleware::Mashify, :content_type => /\bjson$/
+        conn.response :json, :content_type => /\bjson$/
         conn.adapter :net_http
       end
     end
@@ -51,15 +55,15 @@ module PowerClient
 
   Commands = Struct.new(:raw_nodes) do
     def status
-      pp request.status
+      pp request.status.body
     end
 
     def on
-      pp request.on
+      pp request.on.body
     end
 
     def off
-      pp request.off
+      pp request.off.body
     end
 
     private
