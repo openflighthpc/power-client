@@ -30,19 +30,10 @@
 require 'faraday'
 require 'faraday_middleware'
 require 'hashie'
+require 'tty-table'
 
 module PowerClient
   Request = Struct.new(:nodes) do
-    def status
-      self.class.connection.get(path)
-    end
-
-    private
-
-    def path
-      "/nodes/#{nodes}"
-    end
-
     def self.connection
       @connection ||= Faraday.new(url: Config::Cache.base_url) do |conn|
         conn.authorization :Bearer, Config::Cache.jwt_token
@@ -51,25 +42,76 @@ module PowerClient
         conn.adapter :net_http
       end
     end
-  end
 
-  Commands = Struct.new(:raw_nodes) do
     def status
-      pp request.status.body
+      self.class.connection.get(path)
     end
 
     def on
-      pp request.on.body
+      self.class.connection.patch(path)
     end
 
     def off
-      pp request.off.body
+      self.class.connection.delete(path)
     end
 
     private
 
+    def path
+      "/nodes/#{nodes}"
+    end
+  end
+
+  Commands = Struct.new(:raw_nodes) do
+    def status
+      run_request(:status) do |node|
+        status = if node.attributes.success && node.attributes.running
+                   'On'
+                 elsif node.attributes.success
+                   'Off'
+                 else
+                   'Unknown'
+                 end
+        [node.id, status]
+      end
+    end
+
+    def on
+      run_request(:on) do |node|
+        status = if node.attributes.success
+                   'Starting'
+                 else
+                   'Failed to start'
+                 end
+        [node.id, status]
+      end
+    end
+
+    def off
+      run_request(:off) do |node|
+        status = if node.attributes.success
+                   'Stopping'
+                 else
+                   'Failed to stop'
+                 end
+        [node.id, status]
+      end
+    end
+
+    private
+
+    def run_request(method)
+      res = request.send(method)
+      if res.success?
+        rows = res.body.data.map { |n| yield n }
+        puts TTY::Table.new(rows: rows).render
+      else
+        raise 'An error has occurred'
+      end
+    end
+
     def request
-      Request.new(nodes)
+      @request ||= Request.new(nodes)
     end
 
     def nodes
