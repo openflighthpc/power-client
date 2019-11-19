@@ -30,27 +30,43 @@
 require 'faraday'
 
 module PowerClient
-  Response = Struct.new(:_) do
-    def self.status
+  Request = Struct.new(:nodes) do
+    def status
+      self.class.connection.get(path)
+    end
+
+    private
+
+    def path
+      "/nodes/#{nodes}"
     end
 
     def self.connection
-      @connection ||= Faraday.new(url: Config::Cache.base_url) do
+      @connection ||= Faraday.new(url: Config::Cache.base_url) do |conn|
+        conn.authorization :Bearer, Config::Cache.jwt_token
+        conn.adapter :net_http
       end
     end
   end
 
   Commands = Struct.new(:raw_nodes) do
     def status
+      pp request.status
     end
 
     def on
+      pp request.on
     end
 
     def off
+      pp request.off
     end
 
     private
+
+    def request
+      Request.new(nodes)
+    end
 
     def nodes
       if raw_nodes
