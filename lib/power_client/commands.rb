@@ -63,7 +63,7 @@ module PowerClient
     private
 
     def path
-      "/nodes/#{URI.escape(nodes, '[]')}"
+      "/?nodes=#{URI.escape(nodes, '[]')}"
     end
   end
 
