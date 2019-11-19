@@ -105,8 +105,10 @@ module PowerClient
       if res.success?
         rows = res.body.data.map { |n| yield n }
         puts TTY::Table.new(rows: rows).render
+      elsif res.status == 403
+        raise 'You do not have permission to access this content!'
       else
-        raise 'An error has occurred'
+        raise 'An unexpected error has occurred!'
       end
     end
 
