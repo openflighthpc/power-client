@@ -56,6 +56,10 @@ module PowerClient
       self.class.connection.delete(path)
     end
 
+    def restart
+      self.class.connection.put(path)
+    end
+
     private
 
     def path
@@ -94,6 +98,17 @@ module PowerClient
                    'Stopping'
                  else
                    'Failed to stop'
+                 end
+        [node.id, status]
+      end
+    end
+
+    def restart
+      run_request(:restart) do |node|
+        status = if node.attributes.success
+                   'Restarting'
+                 else
+                   'Failed to restart'
                  end
         [node.id, status]
       end

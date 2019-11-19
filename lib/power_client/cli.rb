@@ -99,5 +99,12 @@ module PowerClient
       shared_options(c)
       action(c, Commands, method: :off)
     end
+
+    command 'restart' do |c|
+      cli_syntax(c)
+      c.summary = 'Reboot the nodes'
+      shared_options(c)
+      action(c, Commands, method: :restart)
+    end
   end
 end
