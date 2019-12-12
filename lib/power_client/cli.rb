@@ -32,7 +32,7 @@ require 'power_client/config'
 require 'power_client/commands'
 
 module PowerClient
-  VERSION = '0.2.0'
+  VERSION = '0.2.1'
 
   class CLI
     extend Commander::Delegates
