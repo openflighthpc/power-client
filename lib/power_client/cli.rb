@@ -55,11 +55,12 @@ module PowerClient
         hash.delete(:trace)
         begin
           begin
-            cmd = klass.new(hash.delete(:nodes))
+            cmd = klass.new(*args)
+            hash.delete(:nodes)
             if hash.empty?
-              cmd.public_send(method, *args)
+              cmd.public_send(method)
             else
-              cmd.public_send(method, *args, **hash)
+              cmd.public_send(method, **hash)
             end
           rescue Interrupt
             raise RuntimeError, 'Received Interrupt!'
@@ -68,15 +69,15 @@ module PowerClient
       end
     end
 
-    def self.cli_syntax(command, args_str = '')
+    def self.cli_syntax(command)
       command.hidden = true if command.name.split.length > 1
       command.syntax = <<~SYNTAX.chomp
-        #{program(:name)} #{command.name} #{args_str}
+        #{program(:name)} #{command.name} NODES[_OR_GROUPS]...
       SYNTAX
     end
 
     def self.shared_options(command)
-      command.option '-n', '--nodes NODES', 'Specify the node names'
+      command.option '-n', '--nodes', 'DEPRECATED: Will be removed in the next release'
     end
 
     command 'status' do |c|

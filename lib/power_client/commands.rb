@@ -67,7 +67,13 @@ module PowerClient
     end
   end
 
-  Commands = Struct.new(:raw_nodes) do
+  class Commands
+    attr_reader :names
+
+    def initialize(*args)
+      @names = args.join(',')
+    end
+
     def status
       run_request(:status) do |node|
         status = if node.attributes.success && node.attributes.running
@@ -129,15 +135,7 @@ module PowerClient
     end
 
     def request
-      @request ||= Request.new(nodes)
-    end
-
-    def nodes
-      if raw_nodes
-        raw_nodes
-      else
-        raise "the '--nodes NODES' flag is required"
-      end
+      @request ||= Request.new(names)
     end
   end
 end
