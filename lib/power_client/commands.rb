@@ -34,7 +34,7 @@ require 'tty-table'
 require 'uri'
 
 module PowerClient
-  Request = Struct.new(:nodes) do
+  Request = Struct.new(:names, :groups) do
     def self.connection
       @connection ||= Faraday.new(url: Config::Cache.base_url) do |conn|
         conn.authorization :Bearer, Config::Cache.jwt_token
@@ -63,15 +63,16 @@ module PowerClient
     private
 
     def path
-      "/?nodes=#{URI.escape(nodes, '[]')}"
+      "/?#{groups ? 'groups' : 'nodes'}=#{URI.escape(names, '[]')}"
     end
   end
 
   class Commands
-    attr_reader :names
+    attr_reader :names, :groups
 
-    def initialize(*args)
+    def initialize(*args, groups: false)
       @names = args.join(',')
+      @groups = groups
     end
 
     def status
@@ -135,7 +136,7 @@ module PowerClient
     end
 
     def request
-      @request ||= Request.new(names)
+      @request ||= Request.new(names, groups)
     end
   end
 end

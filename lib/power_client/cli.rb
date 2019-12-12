@@ -55,7 +55,7 @@ module PowerClient
         hash.delete(:trace)
         begin
           begin
-            cmd = klass.new(*args)
+            cmd = klass.new(*args, groups: hash.delete(:groups))
             hash.delete(:nodes)
             if hash.empty?
               cmd.public_send(method)
@@ -78,6 +78,7 @@ module PowerClient
 
     def self.shared_options(command)
       command.option '-n', '--nodes', 'DEPRECATED: Will be removed in the next release'
+      command.option '-g', '--groups', 'Toggles the NODES name arguments to be GROUPS'
     end
 
     command 'status' do |c|
