@@ -69,16 +69,28 @@ module PowerClient
       end
     end
 
-    def self.cli_syntax(command)
+    def self.cli_syntax(command, standard: true)
       command.hidden = true if command.name.split.length > 1
       command.syntax = <<~SYNTAX.chomp
-        #{program(:name)} #{command.name} NODES[_GROUPS]...
+        #{program(:name)} #{command.name} #{'NODES[_GROUPS]...' if standard }
       SYNTAX
     end
 
     def self.shared_options(command)
       command.option '-n', '--nodes', 'DEPRECATED: Will be removed in the next release'
       command.option '-g', '--groups', 'Toggles the NODES name arguments to be GROUPS'
+    end
+
+    command 'list-nodes' do |c|
+      cli_syntax(c, standard: false)
+      c.summary = 'Return all the registed nodes'
+      action(c, Commands, method: :list_nodes)
+    end
+
+    command 'list-groups' do |c|
+      cli_syntax(c, standard: false)
+      c.summary = 'Return all the registed groups'
+      action(c, Commands, method: :list_groups)
     end
 
     command 'status' do |c|
