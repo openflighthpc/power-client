@@ -28,6 +28,7 @@
 #===============================================================================
 
 require 'active_support/core_ext/module/delegation'
+require 'yaml'
 require 'hashie'
 
 module PowerClient
@@ -50,5 +51,6 @@ module PowerClient
 
     property :base_url
     property :jwt_token
+    property :debug_mode
   end
 end

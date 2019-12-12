@@ -19,3 +19,10 @@ base_url:
 # system administrator to be issued with a token
 # =============================================================================
 jwt_token:
+
+# =============================================================================
+# Debugging Mode
+# Put the client into development/debugging mode
+# =============================================================================
+debug_mode:
+
