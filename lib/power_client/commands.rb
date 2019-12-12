@@ -83,6 +83,14 @@ module PowerClient
       @groups = groups
     end
 
+    def list
+      if groups
+        list_groups
+      else
+        list_nodes
+      end
+    end
+
     def list_nodes
       puts Request.list_nodes.body.data.map(&:id)
     end

@@ -81,16 +81,11 @@ module PowerClient
       command.option '-g', '--groups', 'Toggles the NODES name arguments to be GROUPS'
     end
 
-    command 'list-nodes' do |c|
+    command 'list' do |c|
       cli_syntax(c, standard: false)
-      c.summary = 'Return all the registed nodes'
-      action(c, Commands, method: :list_nodes)
-    end
-
-    command 'list-groups' do |c|
-      cli_syntax(c, standard: false)
-      c.summary = 'Return all the registed groups'
-      action(c, Commands, method: :list_groups)
+      c.summary = 'Return all the registed nodes [or groups]'
+      c.option '-g', '--groups', 'Return the groups instead of nodes'
+      action(c, Commands, method: :list)
     end
 
     command 'status' do |c|
