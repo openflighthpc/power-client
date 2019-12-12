@@ -32,7 +32,7 @@ require 'power_client/config'
 require 'power_client/commands'
 
 module PowerClient
-  VERSION = '0.2.0'
+  VERSION = '0.2.1'
 
   class CLI
     extend Commander::Delegates
@@ -69,16 +69,24 @@ module PowerClient
       end
     end
 
-    def self.cli_syntax(command)
+    def self.cli_syntax(command, standard: true)
       command.hidden = true if command.name.split.length > 1
       command.syntax = <<~SYNTAX.chomp
-        #{program(:name)} #{command.name} NODES[_GROUPS]...
+        #{program(:name)} #{command.name} #{'NODES[_GROUPS]...' if standard }
       SYNTAX
     end
 
     def self.shared_options(command)
       command.option '-n', '--nodes', 'DEPRECATED: Will be removed in the next release'
       command.option '-g', '--groups', 'Toggles the NODES name arguments to be GROUPS'
+    end
+
+    command 'list' do |c|
+      cli_syntax(c, standard: false)
+      c.summary = 'Return all the registed nodes [or groups]'
+      c.option '-g', '--groups', 'Return the groups instead of nodes'
+      c.option '-v', '--verbose', 'Return the nodes when used with --groups'
+      action(c, Commands, method: :list)
     end
 
     command 'status' do |c|

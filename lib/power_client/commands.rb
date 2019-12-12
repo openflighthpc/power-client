@@ -44,6 +44,14 @@ module PowerClient
       end
     end
 
+    def self.list_nodes
+      connection.get('/nodes')
+    end
+
+    def list_groups
+      self.class.connection.get('/groups')
+    end
+
     def status
       self.class.connection.get(path)
     end
@@ -73,6 +81,24 @@ module PowerClient
     def initialize(*args, groups: false)
       @names = args.join(',')
       @groups = groups
+    end
+
+    def list(verbose: false)
+      if groups
+        list_groups(verbose: verbose)
+      else
+        list_nodes
+      end
+    end
+
+    def list_nodes
+      puts Request.list_nodes.body.data.map(&:id)
+    end
+
+    def list_groups(verbose: false)
+      run_request(:list_groups) do |group|
+        [group.id, verbose ? group.attributes.nodes.join(',') : nil]
+      end
     end
 
     def status

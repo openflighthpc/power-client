@@ -36,6 +36,47 @@ vi etc/config.yaml
 
 ## Basic Usage
 
+The following will turn `on`, `off`, `restart`, and get the power status of a single node (`node01`) respectively:
+
+```
+bin/power on node01
+bin/power off node01
+bin/power restart node01
+bin/power status node01
+```
+
+The above commands can all be range over a range of nodes using `nodeattr` syntax:
+
+```
+bin/power status node[01-10] slave[01-10]
+node01 <status>
+node02 <status>
+...
+node10 <status>
+slave01 <status>
+slave02 <status>
+...
+slave10 <status>
+```
+
+They can also be ran over groups of nodes using the `--groups` commands. The server must be in upstream mode or it will respond `noop`.
+
+```
+bin/power status --groups nodes other
+```
+
+To help the trouble shooting the `list` command can be used to retrieve all the `nodes`. It will return all the groups when used with `--groups`. Both the `groups` and `nodes` will be returned when combined with the `--verbose` and `--groups` flags.
+
+```
+# Return all the nodes
+bin/power list
+
+# Return all the groups
+bin/power list --groups
+
+# Return all the groups and associated nodes
+bin/power list --groups --verbose
+```
 
 # Contributing
 
