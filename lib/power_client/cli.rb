@@ -85,6 +85,7 @@ module PowerClient
       cli_syntax(c, standard: false)
       c.summary = 'Return all the registed nodes [or groups]'
       c.option '-g', '--groups', 'Return the groups instead of nodes'
+      c.option '-v', '--verbose', 'Return the nodes when used with --groups'
       action(c, Commands, method: :list)
     end
 
