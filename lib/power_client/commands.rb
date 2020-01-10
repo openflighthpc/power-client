@@ -40,6 +40,7 @@ module PowerClient
         conn.authorization :Bearer, Config::Cache.jwt_token
         conn.use FaradayMiddleware::Mashify, :content_type => /\bjson$/
         conn.response :json, :content_type => /\bjson$/
+        conn.response :raise_error
         conn.adapter :net_http
       end
     end
