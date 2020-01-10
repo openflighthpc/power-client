@@ -36,7 +36,7 @@ task :setup do
 
   require 'power_client/config'
 
-  Bundler.require(:development) if PowerClient::Config::Cache.debug_mode
+  Bundler.require(:development) if PowerClient::Config::Cache.debug?
 end
 
 task console: :setup do

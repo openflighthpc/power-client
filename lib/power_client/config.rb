@@ -51,6 +51,10 @@ module PowerClient
 
     property :base_url
     property :jwt_token
-    property :debug_mode
+    property :debug
+
+    def debug?
+      debug ? true : false
+    end
   end
 end

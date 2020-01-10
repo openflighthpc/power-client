@@ -24,5 +24,5 @@ jwt_token:
 # Debugging Mode
 # Put the client into development/debugging mode
 # =============================================================================
-debug_mode:
+debug:
 
