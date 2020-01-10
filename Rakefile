@@ -34,11 +34,13 @@ task :setup do
   require 'rubygems'
   require 'bundler/setup'
 
-  require 'pry'
-  require 'pry-byebug'
+  require 'power_client/config'
+
+  Bundler.require(:development) if PowerClient::Config::Cache.debug?
 end
 
 task console: :setup do
+  Bundler.require(:development)
   require 'power_client/cli'
   binding.pry
 end
